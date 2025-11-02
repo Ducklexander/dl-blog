@@ -69,6 +69,14 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    blog: Blog;
+    artwork: Artwork;
+    dev: Dev;
+    'blog-categories': BlogCategory;
+    'blog-tags': BlogTag;
+    'dev-categories': DevCategory;
+    'dev-tags': DevTag;
+    'artwork-medium': ArtworkMedium;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -77,6 +85,14 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    blog: BlogSelect<false> | BlogSelect<true>;
+    artwork: ArtworkSelect<false> | ArtworkSelect<true>;
+    dev: DevSelect<false> | DevSelect<true>;
+    'blog-categories': BlogCategoriesSelect<false> | BlogCategoriesSelect<true>;
+    'blog-tags': BlogTagsSelect<false> | BlogTagsSelect<true>;
+    'dev-categories': DevCategoriesSelect<false> | DevCategoriesSelect<true>;
+    'dev-tags': DevTagsSelect<false> | DevTagsSelect<true>;
+    'artwork-medium': ArtworkMediumSelect<false> | ArtworkMediumSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -84,8 +100,14 @@ export interface Config {
   db: {
     defaultIDType: number;
   };
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    about: About;
+    contact: Contact;
+  };
+  globalsSelect: {
+    about: AboutSelect<false> | AboutSelect<true>;
+    contact: ContactSelect<false> | ContactSelect<true>;
+  };
   locale: null;
   user: User & {
     collection: 'users';
@@ -119,6 +141,8 @@ export interface UserAuthOperations {
  */
 export interface User {
   id: number;
+  name: string;
+  role: 'admin' | 'subscriber';
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -156,6 +180,273 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blog".
+ */
+export interface Blog {
+  id: string;
+  status: 'published' | 'draft';
+  author: number | User;
+  /**
+   * Lock this post to subscribers only
+   */
+  locked?: boolean | null;
+  blog_category?: (number | BlogCategory)[] | null;
+  blog_tag?: (number | BlogTag)[] | null;
+  thumbnail: number | Media;
+  title_zh: string;
+  title_en?: string | null;
+  excerpt_zh: string;
+  excerpt_en?: string | null;
+  coverImage?: (number | null) | Media;
+  content_zh: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  content_en?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  metaTitle_zh?: string | null;
+  metaTitle_en?: string | null;
+  metaDescription_zh?: string | null;
+  metaDescription_en?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blog-categories".
+ */
+export interface BlogCategory {
+  id: number;
+  name_zh: string;
+  name_en?: string | null;
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blog-tags".
+ */
+export interface BlogTag {
+  id: number;
+  name_zh: string;
+  name_en?: string | null;
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "artwork".
+ */
+export interface Artwork {
+  id: number;
+  slug: string;
+  status: 'published' | 'draft';
+  year: number;
+  author_zh?: string | null;
+  author_en?: string | null;
+  medium?: (number | ArtworkMedium)[] | null;
+  description_zh: string;
+  description_en?: string | null;
+  thumbnail: number | Media;
+  bannerImage: number | Media;
+  galleryImages?:
+    | {
+        image: number | Media;
+        id?: string | null;
+      }[]
+    | null;
+  videoUrl?: string | null;
+  collaborationType: 'individual' | 'collaborate';
+  usedTech?:
+    | {
+        tech: string;
+        id?: string | null;
+      }[]
+    | null;
+  credits?:
+    | {
+        name: string;
+        id?: string | null;
+      }[]
+    | null;
+  extraLinks?:
+    | {
+        label_zh?: string | null;
+        label_en?: string | null;
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  exhibitions?:
+    | {
+        name_zh?: string | null;
+        name_en?: string | null;
+        location?: string | null;
+        date?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  awards?:
+    | {
+        name_zh?: string | null;
+        name_en?: string | null;
+        year?: number | null;
+        id?: string | null;
+      }[]
+    | null;
+  content_zh?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  content_en?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "artwork-medium".
+ */
+export interface ArtworkMedium {
+  id: number;
+  name_zh: string;
+  name_en?: string | null;
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "dev".
+ */
+export interface Dev {
+  id: number;
+  slug: string;
+  status: 'published' | 'draft';
+  dev_category?: (number | DevCategory)[] | null;
+  dev_tag?: (number | DevTag)[] | null;
+  thumbnail: number | Media;
+  title_zh: string;
+  title_en?: string | null;
+  excerpt_zh: string;
+  excerpt_en?: string | null;
+  coverImage?: (number | null) | Media;
+  content_zh: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  content_en?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  metaTitle_zh?: string | null;
+  metaTitle_en?: string | null;
+  metaDescription_zh?: string | null;
+  metaDescription_en?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "dev-categories".
+ */
+export interface DevCategory {
+  id: number;
+  name_zh: string;
+  name_en?: string | null;
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "dev-tags".
+ */
+export interface DevTag {
+  id: number;
+  name_zh: string;
+  name_en?: string | null;
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
@@ -168,6 +459,38 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'blog';
+        value: string | Blog;
+      } | null)
+    | ({
+        relationTo: 'artwork';
+        value: number | Artwork;
+      } | null)
+    | ({
+        relationTo: 'dev';
+        value: number | Dev;
+      } | null)
+    | ({
+        relationTo: 'blog-categories';
+        value: number | BlogCategory;
+      } | null)
+    | ({
+        relationTo: 'blog-tags';
+        value: number | BlogTag;
+      } | null)
+    | ({
+        relationTo: 'dev-categories';
+        value: number | DevCategory;
+      } | null)
+    | ({
+        relationTo: 'dev-tags';
+        value: number | DevTag;
+      } | null)
+    | ({
+        relationTo: 'artwork-medium';
+        value: number | ArtworkMedium;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -216,6 +539,8 @@ export interface PayloadMigration {
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
+  name?: T;
+  role?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -251,6 +576,179 @@ export interface MediaSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blog_select".
+ */
+export interface BlogSelect<T extends boolean = true> {
+  id?: T;
+  status?: T;
+  author?: T;
+  locked?: T;
+  blog_category?: T;
+  blog_tag?: T;
+  thumbnail?: T;
+  title_zh?: T;
+  title_en?: T;
+  excerpt_zh?: T;
+  excerpt_en?: T;
+  coverImage?: T;
+  content_zh?: T;
+  content_en?: T;
+  metaTitle_zh?: T;
+  metaTitle_en?: T;
+  metaDescription_zh?: T;
+  metaDescription_en?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "artwork_select".
+ */
+export interface ArtworkSelect<T extends boolean = true> {
+  slug?: T;
+  status?: T;
+  year?: T;
+  author_zh?: T;
+  author_en?: T;
+  medium?: T;
+  description_zh?: T;
+  description_en?: T;
+  thumbnail?: T;
+  bannerImage?: T;
+  galleryImages?:
+    | T
+    | {
+        image?: T;
+        id?: T;
+      };
+  videoUrl?: T;
+  collaborationType?: T;
+  usedTech?:
+    | T
+    | {
+        tech?: T;
+        id?: T;
+      };
+  credits?:
+    | T
+    | {
+        name?: T;
+        id?: T;
+      };
+  extraLinks?:
+    | T
+    | {
+        label_zh?: T;
+        label_en?: T;
+        url?: T;
+        id?: T;
+      };
+  exhibitions?:
+    | T
+    | {
+        name_zh?: T;
+        name_en?: T;
+        location?: T;
+        date?: T;
+        id?: T;
+      };
+  awards?:
+    | T
+    | {
+        name_zh?: T;
+        name_en?: T;
+        year?: T;
+        id?: T;
+      };
+  content_zh?: T;
+  content_en?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "dev_select".
+ */
+export interface DevSelect<T extends boolean = true> {
+  slug?: T;
+  status?: T;
+  dev_category?: T;
+  dev_tag?: T;
+  thumbnail?: T;
+  title_zh?: T;
+  title_en?: T;
+  excerpt_zh?: T;
+  excerpt_en?: T;
+  coverImage?: T;
+  content_zh?: T;
+  content_en?: T;
+  metaTitle_zh?: T;
+  metaTitle_en?: T;
+  metaDescription_zh?: T;
+  metaDescription_en?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blog-categories_select".
+ */
+export interface BlogCategoriesSelect<T extends boolean = true> {
+  name_zh?: T;
+  name_en?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blog-tags_select".
+ */
+export interface BlogTagsSelect<T extends boolean = true> {
+  name_zh?: T;
+  name_en?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "dev-categories_select".
+ */
+export interface DevCategoriesSelect<T extends boolean = true> {
+  name_zh?: T;
+  name_en?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "dev-tags_select".
+ */
+export interface DevTagsSelect<T extends boolean = true> {
+  name_zh?: T;
+  name_en?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "artwork-medium_select".
+ */
+export interface ArtworkMediumSelect<T extends boolean = true> {
+  name_zh?: T;
+  name_en?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents_select".
  */
 export interface PayloadLockedDocumentsSelect<T extends boolean = true> {
@@ -280,6 +778,126 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "about".
+ */
+export interface About {
+  id: number;
+  content_zh: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  content_en?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact".
+ */
+export interface Contact {
+  id: number;
+  content_zh: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  content_en?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  email?: string | null;
+  socialLinks?:
+    | {
+        platform: string;
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "about_select".
+ */
+export interface AboutSelect<T extends boolean = true> {
+  content_zh?: T;
+  content_en?: T;
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact_select".
+ */
+export interface ContactSelect<T extends boolean = true> {
+  content_zh?: T;
+  content_en?: T;
+  email?: T;
+  socialLinks?:
+    | T
+    | {
+        platform?: T;
+        url?: T;
+        id?: T;
+      };
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

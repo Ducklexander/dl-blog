@@ -1,9 +1,13 @@
+// Location: src/app/(frontend)/layout.tsx
+// 修改: 添加 LanguageProvider 和 Header
 import React from 'react'
+import { LanguageProvider } from '@/context/LanguageContext'
+import { Header } from '@/components/Header'
 import './styles.css'
 
 export const metadata = {
-  description: 'A blank template using Payload in a Next.js app.',
-  title: 'Payload Blank Template',
+  description: 'DuckL - New Media Artist',
+  title: 'DuckL Blog',
 }
 
 export default async function RootLayout(props: { children: React.ReactNode }) {
@@ -12,7 +16,10 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body>
-        <main>{children}</main>
+        <LanguageProvider>
+          <Header />
+          <main className="pt-16">{children}</main>
+        </LanguageProvider>
       </body>
     </html>
   )
