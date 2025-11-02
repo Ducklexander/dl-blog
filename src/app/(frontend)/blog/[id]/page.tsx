@@ -9,7 +9,7 @@ import { LanguageToggle } from '@/components/LanguageToggle'
 export const dynamic = 'force-dynamic'
 
 // Disable static generation during build
-export async function generateStaticParams() {
+export async function generateStaticParams(): Promise<{ id: string }[]> {
   // Return empty array to skip static generation
   // Pages will be generated on-demand at runtime
   return []
