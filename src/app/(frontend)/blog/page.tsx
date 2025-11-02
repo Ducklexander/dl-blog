@@ -5,6 +5,8 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { LanguageToggle } from '@/components/LanguageToggle'
 
+export const dynamic = 'force-dynamic'
+
 export default async function BlogPage() {
   const payload = await getPayload({ config })
   
