@@ -6,16 +6,13 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { LanguageToggle } from '@/components/LanguageToggle'
 
-export async function generateStaticParams() {
-  const payload = await getPayload({ config })
-  const { docs: posts } = await payload.find({
-    collection: 'blog',
-    limit: 100,
-  })
+export const dynamic = 'force-dynamic'
 
-  return posts.map((post) => ({
-    id: post.id,
-  }))
+// Disable static generation during build
+export async function generateStaticParams() {
+  // Return empty array to skip static generation
+  // Pages will be generated on-demand at runtime
+  return []
 }
 
 export default async function BlogDetailPage({ 
